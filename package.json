@@ -1,0 +1,57 @@
+{
+  "name": "n8n-nodes-openbsp",
+  "version": "0.1.0",
+  "description": "Send and receive WhatsApp and Instagram messages through OpenBSP — the open-source WhatsApp/Instagram Business Platform on Meta's official Cloud API.",
+  "license": "MIT",
+  "homepage": "https://github.com/matiasbattocchia/n8n-nodes-openbsp#readme",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "openbsp",
+    "whatsapp",
+    "instagram",
+    "whatsapp-business",
+    "messaging"
+  ],
+  "author": {
+    "name": "Matías Battocchia",
+    "email": "matias@riseup.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matiasbattocchia/n8n-nodes-openbsp.git"
+  },
+  "scripts": {
+    "build": "n8n-node build",
+    "build:watch": "tsc --watch",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "lint:fix": "n8n-node lint --fix",
+    "release": "n8n-node release",
+    "prepublishOnly": "n8n-node prerelease"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": [
+      "dist/credentials/OpenBspApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/OpenBsp/OpenBsp.node.js",
+      "dist/nodes/OpenBspTrigger/OpenBspTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "*",
+    "eslint": "9.29.0",
+    "prettier": "3.6.2",
+    "release-it": "^19.0.4",
+    "typescript": "5.9.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

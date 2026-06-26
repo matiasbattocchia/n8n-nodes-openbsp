@@ -1,0 +1,10 @@
+dist
+node_modules
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+*.tsbuildinfo
