@@ -93,7 +93,7 @@ Open http://localhost:5678 and search the node panel for **OpenBSP**.
 
 ## Resources
 
-- [OpenBSP n8n guide](https://github.com/matiasbattocchia/open-bsp-api/blob/main/N8N_NODE.md)
+- [OpenBSP n8n guide](https://github.com/matiasbattocchia/n8n-nodes-openbsp)
 - [OpenBSP repo](https://github.com/matiasbattocchia/open-bsp-api)
 - [n8n community nodes docs](https://docs.n8n.io/integrations/community-nodes/)
 
