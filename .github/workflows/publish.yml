@@ -80,6 +80,14 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'npm'
+          # Required so npm writes a registry-scoped .npmrc and performs the
+          # OIDC trusted-publishing exchange (no long-lived token needed).
+          registry-url: 'https://registry.npmjs.org/'
+
+      # npm OIDC trusted publishing requires npm >= 11.5.1, newer than the
+      # version bundled with the LTS Node release.
+      - name: Upgrade npm (for OIDC trusted publishing)
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: 'npm ci'
