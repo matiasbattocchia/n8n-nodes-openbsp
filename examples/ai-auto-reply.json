@@ -1,0 +1,65 @@
+{
+  "name": "OpenBSP — AI auto-reply (with context)",
+  "nodes": [
+    {
+      "parameters": {
+        "event": "onMessage",
+        "direction": "incoming",
+        "serviceFilter": "any",
+        "loadContext": true
+      },
+      "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "name": "On incoming message",
+      "type": "n8n-nodes-openbsp.openBspTrigger",
+      "typeVersion": 1,
+      "position": [340, 320],
+      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data.content.text }}",
+        "options": {
+          "systemMessage": "You are a helpful WhatsApp assistant for our business. Reply concisely. Recent conversation context is available to you."
+        }
+      },
+      "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [640, 320]
+    },
+    {
+      "parameters": { "model": "gpt-4o-mini", "options": {} },
+      "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [640, 520],
+      "credentials": { "openAiApi": { "id": "REPLACE_ME", "name": "OpenAI account" } }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendText",
+        "account": { "__rl": true, "value": "={{ $('On incoming message').item.json.data.organization_address }}", "mode": "id" },
+        "service": "={{ $('On incoming message').item.json.data.service }}",
+        "to": "={{ $('On incoming message').item.json.data.contact_address }}",
+        "text": "={{ $json.output }}"
+      },
+      "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+      "name": "Send reply",
+      "type": "n8n-nodes-openbsp.openBsp",
+      "typeVersion": 1,
+      "position": [1000, 320],
+      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+    }
+  ],
+  "connections": {
+    "On incoming message": { "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]] },
+    "OpenAI Chat Model": { "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]] },
+    "AI Agent": { "main": [[{ "node": "Send reply", "type": "main", "index": 0 }]] }
+  },
+  "settings": {},
+  "pinData": {}
+}

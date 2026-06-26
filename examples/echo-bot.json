@@ -1,0 +1,39 @@
+{
+  "name": "OpenBSP — Echo bot",
+  "nodes": [
+    {
+      "parameters": {
+        "event": "onMessage",
+        "direction": "incoming",
+        "serviceFilter": "any"
+      },
+      "id": "11111111-1111-4111-8111-111111111111",
+      "name": "On incoming message",
+      "type": "n8n-nodes-openbsp.openBspTrigger",
+      "typeVersion": 1,
+      "position": [380, 300],
+      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendText",
+        "account": { "__rl": true, "value": "={{ $json.data.organization_address }}", "mode": "id" },
+        "service": "={{ $json.data.service }}",
+        "to": "={{ $json.data.contact_address }}",
+        "text": "=You said: {{ $json.data.content.text }}"
+      },
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "Echo back",
+      "type": "n8n-nodes-openbsp.openBsp",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+    }
+  ],
+  "connections": {
+    "On incoming message": { "main": [[{ "node": "Echo back", "type": "main", "index": 0 }]] }
+  },
+  "settings": {},
+  "pinData": {}
+}
