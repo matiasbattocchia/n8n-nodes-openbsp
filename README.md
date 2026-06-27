@@ -120,9 +120,9 @@ your **OpenBSP API** credential.
 
 Ready-to-import files live in [`examples/`](examples):
 
-| Workflow | File | What it does |
-| -------- | ---- | ------------ |
-| Echo bot | [`examples/echo-bot.json`](examples/echo-bot.json) | Replies to every incoming message with its own text. The smallest end-to-end example. |
+| Workflow      | File                                                         | What it does                                                                                                                     |
+| ------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Echo bot      | [`examples/echo-bot.json`](examples/echo-bot.json)           | Replies to every incoming message with its own text. The smallest end-to-end example.                                            |
 | AI auto-reply | [`examples/ai-auto-reply.json`](examples/ai-auto-reply.json) | Loads the conversation thread as context, asks an LLM for a reply, and sends it. Requires a chat-model credential (e.g. OpenAI). |
 
 <details>
@@ -130,35 +130,39 @@ Ready-to-import files live in [`examples/`](examples):
 
 ```json
 {
-  "name": "OpenBSP — Echo bot",
-  "nodes": [
-    {
-      "parameters": { "event": "onMessage", "direction": "incoming", "serviceFilter": "any" },
-      "name": "On incoming message",
-      "type": "n8n-nodes-openbsp.openBspTrigger",
-      "typeVersion": 1,
-      "position": [380, 300],
-      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
-    },
-    {
-      "parameters": {
-        "resource": "message",
-        "operation": "sendText",
-        "account": { "__rl": true, "value": "={{ $json.data.organization_address }}", "mode": "id" },
-        "service": "={{ $json.data.service }}",
-        "to": "={{ $json.data.contact_address }}",
-        "text": "=You said: {{ $json.data.content.text }}"
-      },
-      "name": "Echo back",
-      "type": "n8n-nodes-openbsp.openBsp",
-      "typeVersion": 1,
-      "position": [680, 300],
-      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
-    }
-  ],
-  "connections": {
-    "On incoming message": { "main": [[{ "node": "Echo back", "type": "main", "index": 0 }]] }
-  }
+	"name": "OpenBSP — Echo bot",
+	"nodes": [
+		{
+			"parameters": { "event": "onMessage", "direction": "incoming", "serviceFilter": "any" },
+			"name": "On incoming message",
+			"type": "n8n-nodes-openbsp.openBspTrigger",
+			"typeVersion": 1,
+			"position": [380, 300],
+			"credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+		},
+		{
+			"parameters": {
+				"resource": "message",
+				"operation": "sendText",
+				"account": {
+					"__rl": true,
+					"value": "={{ $json.data.organization_address }}",
+					"mode": "id"
+				},
+				"service": "={{ $json.data.service }}",
+				"to": "={{ $json.data.contact_address }}",
+				"text": "=You said: {{ $json.data.content.text }}"
+			},
+			"name": "Echo back",
+			"type": "n8n-nodes-openbsp.openBsp",
+			"typeVersion": 1,
+			"position": [680, 300],
+			"credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+		}
+	],
+	"connections": {
+		"On incoming message": { "main": [[{ "node": "Echo back", "type": "main", "index": 0 }]] }
+	}
 }
 ```
 
@@ -172,56 +176,69 @@ thread. Connect any chat model to the AI Agent.
 
 ```json
 {
-  "name": "OpenBSP — AI auto-reply (with context)",
-  "nodes": [
-    {
-      "parameters": { "event": "onMessage", "direction": "incoming", "serviceFilter": "any", "loadContext": true },
-      "name": "On incoming message",
-      "type": "n8n-nodes-openbsp.openBspTrigger",
-      "typeVersion": 1,
-      "position": [340, 320],
-      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $json.data.content.text }}",
-        "options": { "systemMessage": "You are a helpful WhatsApp assistant for our business. Reply concisely." }
-      },
-      "name": "AI Agent",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 1.7,
-      "position": [640, 320]
-    },
-    {
-      "parameters": { "model": "gpt-4o-mini", "options": {} },
-      "name": "OpenAI Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1,
-      "position": [640, 520],
-      "credentials": { "openAiApi": { "id": "REPLACE_ME", "name": "OpenAI account" } }
-    },
-    {
-      "parameters": {
-        "resource": "message",
-        "operation": "sendText",
-        "account": { "__rl": true, "value": "={{ $('On incoming message').item.json.data.organization_address }}", "mode": "id" },
-        "service": "={{ $('On incoming message').item.json.data.service }}",
-        "to": "={{ $('On incoming message').item.json.data.contact_address }}",
-        "text": "={{ $json.output }}"
-      },
-      "name": "Send reply",
-      "type": "n8n-nodes-openbsp.openBsp",
-      "typeVersion": 1,
-      "position": [1000, 320],
-      "credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
-    }
-  ],
-  "connections": {
-    "On incoming message": { "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]] },
-    "OpenAI Chat Model": { "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]] },
-    "AI Agent": { "main": [[{ "node": "Send reply", "type": "main", "index": 0 }]] }
-  }
+	"name": "OpenBSP — AI auto-reply (with context)",
+	"nodes": [
+		{
+			"parameters": {
+				"event": "onMessage",
+				"direction": "incoming",
+				"serviceFilter": "any",
+				"loadContext": true
+			},
+			"name": "On incoming message",
+			"type": "n8n-nodes-openbsp.openBspTrigger",
+			"typeVersion": 1,
+			"position": [340, 320],
+			"credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+		},
+		{
+			"parameters": {
+				"promptType": "define",
+				"text": "={{ $json.data.content.text }}",
+				"options": {
+					"systemMessage": "You are a helpful WhatsApp assistant for our business. Reply concisely."
+				}
+			},
+			"name": "AI Agent",
+			"type": "@n8n/n8n-nodes-langchain.agent",
+			"typeVersion": 1.7,
+			"position": [640, 320]
+		},
+		{
+			"parameters": { "model": "gpt-4o-mini", "options": {} },
+			"name": "OpenAI Chat Model",
+			"type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+			"typeVersion": 1,
+			"position": [640, 520],
+			"credentials": { "openAiApi": { "id": "REPLACE_ME", "name": "OpenAI account" } }
+		},
+		{
+			"parameters": {
+				"resource": "message",
+				"operation": "sendText",
+				"account": {
+					"__rl": true,
+					"value": "={{ $('On incoming message').item.json.data.organization_address }}",
+					"mode": "id"
+				},
+				"service": "={{ $('On incoming message').item.json.data.service }}",
+				"to": "={{ $('On incoming message').item.json.data.contact_address }}",
+				"text": "={{ $json.output }}"
+			},
+			"name": "Send reply",
+			"type": "n8n-nodes-openbsp.openBsp",
+			"typeVersion": 1,
+			"position": [1000, 320],
+			"credentials": { "openBspApi": { "id": "REPLACE_ME", "name": "OpenBSP account" } }
+		}
+	],
+	"connections": {
+		"On incoming message": { "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]] },
+		"OpenAI Chat Model": {
+			"ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
+		},
+		"AI Agent": { "main": [[{ "node": "Send reply", "type": "main", "index": 0 }]] }
+	}
 }
 ```
 
