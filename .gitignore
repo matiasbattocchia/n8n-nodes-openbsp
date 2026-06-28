@@ -8,3 +8,6 @@ npm-debug.log*
 # Editor / OS
 .DS_Store
 *.tsbuildinfo
+
+# Personal MCP config (local CDP endpoint)
+.mcp.json

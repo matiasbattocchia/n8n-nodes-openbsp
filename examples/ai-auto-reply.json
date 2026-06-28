@@ -20,7 +20,7 @@
 				"promptType": "define",
 				"text": "={{ $json.data.content.text }}",
 				"options": {
-					"systemMessage": "You are a helpful WhatsApp assistant for our business. Reply concisely. Recent conversation context is available to you."
+					"systemMessage": "=You are a helpful WhatsApp assistant for our business. Keep replies short.\n\nConversation so far (oldest to newest):\n{{ $json.context.messages.map(m => (m.direction === 'incoming' ? 'Customer' : 'Assistant') + ': ' + (m.content && m.content.text ? m.content.text : '[non-text message]')).join('\\n') }}"
 				}
 			},
 			"id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
